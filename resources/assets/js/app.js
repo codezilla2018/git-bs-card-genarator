@@ -6,6 +6,7 @@
  */
 
 require('./bootstrap');
+require('jquery');
 
 window.Vue = require('vue');
 
@@ -16,6 +17,9 @@ window.Vue = require('vue');
  */
 
 Vue.component('example-component', require('./components/ExampleComponent.vue'));
+Vue.component('image-component', require('./components/ImageGenarateComponent.vue'));
+
+
 
 const app = new Vue({
     el: '#app'
