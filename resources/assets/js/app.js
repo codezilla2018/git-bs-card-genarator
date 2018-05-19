@@ -6,7 +6,10 @@
  */
 
 require('./bootstrap');
+<<<<<<< HEAD
 require('jquery');
+=======
+>>>>>>> a7027eb98e2e625ec931ed2d98f0b59f17551760
 
 window.Vue = require('vue');
 
@@ -17,9 +20,12 @@ window.Vue = require('vue');
  */
 
 Vue.component('example-component', require('./components/ExampleComponent.vue'));
+<<<<<<< HEAD
 Vue.component('image-component', require('./components/ImageGenarateComponent.vue'));
 
 
+=======
+>>>>>>> a7027eb98e2e625ec931ed2d98f0b59f17551760
 
 const app = new Vue({
     el: '#app'
