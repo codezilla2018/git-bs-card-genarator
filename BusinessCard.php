@@ -7,33 +7,99 @@
  * Time: 9:24 PM
  */
 require_once("phpqrcode/qrlib.php");
+require_once("QrcodeTemplate.php");
+require_once("QrcodeTemplate.php");
 
 class BusinessCard
 {
 
-    public $name;
-    public $email;
-    public $address = [];
-    public $mobile;
+    public $name = "";
+    public $email = "";
+    public $address = ["", "", ""];
+    public $telePhone = 0;
+    public $url = "";
+    public $qrCodePath = "";
+    public $template = 1 ;
 
 
+    /***
+     * create business-card
+     */
     public function create()
     {
+
         $this->createQr();
 
-        $logopath = 'test/myimage.png';
-        $filepath = 'test/stringup.png';
-        $im = imagecreatetruecolor(300, 120);
-        $qrTest = imagecreatefromstring(file_get_contents("test/myimage.png"));
+
+        $logopath = $this->qrCodePath;
+        $imageId = uniqid("card") . '.png';
+
+        $filepath = "images/$imageId";
+        $im = imagecreatetruecolor(330, 150);
+        $qrTest = imagecreatefromstring(file_get_contents($logopath));
 
         imagealphablending($qrTest, false);
         imagesavealpha($qrTest, true);
 
 
-        $text_color = imagecolorallocate($im, 220, 14, 97);
-        imagestring($im, 5, 5, 5, $this->name, $text_color);
-        imagestring($im, 1, 5, 20, $this->email, $text_color);
-        imagestring($im, 1, 5, 50, $this->mobile, $text_color);
+
+        if($this->template == 1){
+            $font = 'fonts/Electrolize-Regular.ttf';
+            $name_color = imagecolorallocate($im, 100, 100, 100);
+            $email_color = imagecolorallocate($im, 220, 100, 200);
+            $telePhone_color = imagecolorallocate($im, 220, 100, 200);
+            $address_color = imagecolorallocate($im, 250, 200, 200);
+        }
+        else if($this->template == 2){
+            $font = 'fonts/BLKCHCRY.ttf';
+            $name_color = imagecolorallocate($im, 240, 200, 100);
+            $email_color = imagecolorallocate($im, 50, 100, 50);
+            $telePhone_color = imagecolorallocate($im, 50, 100, 50);
+            $address_color = imagecolorallocate($im, 50, 100, 50);
+        }
+        else if($this->template == 3){
+            $font = 'fonts/EagleLake-Regular.ttf';
+            $name_color = imagecolorallocate($im, 170, 200, 250);
+            $email_color = imagecolorallocate($im, 200, 2000, 200);
+            $telePhone_color = imagecolorallocate($im, 220, 100, 200);
+            $address_color = imagecolorallocate($im, 250, 200, 200);
+        }
+        else if($this->template == 4){
+            $font = 'fonts/BLKCHCRY.ttf';
+            $name_color = imagecolorallocate($im, 100, 100, 100);
+            $email_color = imagecolorallocate($im, 220, 100, 200);
+            $telePhone_color = imagecolorallocate($im, 220, 100, 200);
+            $address_color = imagecolorallocate($im, 250, 200, 200);
+        }
+        else if($this->template == 5){
+            $font = 'fonts/SEA_GARDENS.ttf';
+            $name_color = imagecolorallocate($im, 100, 100, 100);
+            $email_color = imagecolorallocate($im, 220, 100, 200);
+            $telePhone_color = imagecolorallocate($im, 220, 100, 200);
+            $address_color = imagecolorallocate($im, 250, 200, 200);
+        }
+        else if($this->template == 6){
+            $font = 'fonts/basictitlefont.ttf';
+            $name_color = imagecolorallocate($im, 150, 90, 200);
+            $email_color = imagecolorallocate($im, 250, 200, 200);
+            $telePhone_color = imagecolorallocate($im, 250, 200, 200);
+            $address_color = imagecolorallocate($im, 250, 200, 200);
+        }
+        else{
+            $name_color = imagecolorallocate($im, 250, 50, 130);
+            $email_color = imagecolorallocate($im, 220, 100, 200);
+            $telePhone_color = imagecolorallocate($im, 220, 100, 200);
+            $address_color = imagecolorallocate($im, 220, 100, 200);
+        }
+
+
+
+
+        imagettftext($im, 15, 0, 10, 30, $name_color, $font, $this->name);
+        imagettftext($im, 10, 0,20, 45,$email_color,$font, $this->email);
+        imagettftext($im, 10, 0,20, 60, $telePhone_color,$font,$this->telePhone);
+        imagettftext($im, 9, 0,10, 125, $address_color,$font,$this->address[0] . " , " . $this->address[1] . " , " . $this->address[2]);
+
 
 
         $im_width = imagesx($im);
@@ -42,81 +108,61 @@ class BusinessCard
         $qrTest_width = imagesx($qrTest);
         $qrTest_height = imagesy($qrTest);
 
-// Scale logo to fit in the QR Code
-        $qrTest_qr_width = $qrTest_width / 3;
-        $scale1 = $qrTest_width / $qrTest_qr_width;
-        $qrTest_qr_height = $qrTest_height / $scale1;
 
-        imagecopyresampled($im, $qrTest, $im_width / 3, $im_height / 3, 0, 0, $qrTest_qr_width, $qrTest_qr_height, $qrTest_width, $qrTest_height);
-// Set the content type header - in this case image/jpeg
+        $qrTest_qr_width = 70;
+        $qrTest_qr_height = 70;
+
+        imagecopyresampled($im, $qrTest, 220, 40, 0, 0, $qrTest_qr_width, $qrTest_qr_height, $qrTest_width, $qrTest_height);
 
 
-// Output the image
-
-        imagepng($im, './test/stringup.png');
+        imagepng($im, $filepath);
         imagecreatefromstring(file_get_contents($logopath));
-// Free up memory
+
         imagedestroy($im);
 
 
-// Ouput image in the browser
         echo '<img src="' . $filepath . '" />';
 
 
     }
 
-
-    public function checkAddress()
+    /***
+     * set-address
+     * @param $addressLine1
+     * @param $addressLine2
+     * @param $addressLine3
+     */
+    public function setAddress($addressLine1, $addressLine2, $addressLine3)
     {
-        $address = $this->address;
-        if (count($this->address) > 3) {
-            return false;
-        } else {
-            return true;
-        }
+        $address = new Address();
+        $address->set($addressLine1, $addressLine2, $addressLine3);
+
+        $this->address = $address->get();
 
     }
 
-
+    /***
+     * create QR-image
+     */
     public function createQr()
     {
+        $Qr = new QrcodeTemplate();
+        $Qr->setUrl($this->url);
+        $Qr->setTelePhone($this->telePhone);
+        $Qr->setEmail($this->email);
+        $Qr->setName($this->name);
+        $this->qrCodePath = $Qr->createQrCode();
+    }
 
-        $filepath = 'test/myimage.png';
-
-        $logopath = 'test/stringup.png';
-
-        $codeContents = 'http://ourcodeworld.com';
-
-        QRcode::png($codeContents, $filepath, QR_ECLEVEL_H, 10);
-
-
-        $QR = imagecreatefrompng($filepath);
-
-
-//        $logo = imagecreatefromstring(file_get_contents($logopath));
-//
-//
-//        imagecolortransparent($logo, imagecolorallocatealpha($logo, 0, 0, 0, 127));
-//        imagealphablending($logo, false);
-//        imagesavealpha($logo, true);
-//
-//        $QR_width = imagesx($QR);
-//        $QR_height = imagesy($QR);
-//
-//        $logo_width = imagesx($logo);
-//        $logo_height = imagesy($logo);
-//
-//// Scale logo to fit in the QR Code
-//        $logo_qr_width = $QR_width / 3;
-//        $scale = $logo_width / $logo_qr_width;
-//        $logo_qr_height = $logo_height / $scale;
-//
-//        imagecopyresampled($QR, $logo, $QR_width / 3, $QR_height / 3, 0, 0, $logo_qr_width, $logo_qr_height, $logo_width, $logo_height);
-
-// Save QR code again, but with logo on it
-        imagepng($QR, $filepath);
-
-// End DRAWING LOGO IN QR CODE
+    /***
+     * delete all-images
+     */
+    public function clearMemory()
+    {
+        $files = glob('images/*.png');
+        foreach ($files as $file) {
+            unlink($file);
+        }
     }
 
 
